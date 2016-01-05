@@ -1,0 +1,210 @@
+{
+   streams : [
+       {
+           name : "OA",
+           description : "Outside Air",
+           method :"fsrh",
+       },
+       {
+           name : "MFLA",
+           description : "Mass by Fan Leaving Air",
+           method :"null",
+       },
+       {
+           name : "CCLA",
+           description : "Cooling Coil Leaving Air",
+           method :"null",
+       },
+       {
+           name : "HMLA",
+           description : "Heating by Motor Leaving Air",
+           method :"null",
+       }        
+   ],
+
+   blocks : [
+       {
+           name : "am1",
+           unitop : "AHU.Model.Components.AirMass",
+       },
+       {
+           name : "am2",
+           unitop : "AHU.Model.Components.CoolingCoilTypeA",
+       },  
+       {
+           name : "am3",
+           unitop : "AHU.Model.Components.HeatingMotor",
+       }                 
+   ],
+
+   links: [
+       {
+           stream : "OA",
+           from: "",
+           to : "am1.HA_in",
+       },  
+       {
+           stream : "MFLA",
+           from: "am1.HA_out",
+           to : "am2.HA_in",
+       }, 
+       {
+           stream : "CCLA",
+           from: "am2.HA_out",
+           to : "am3.HA_in",
+       }, 
+       {
+           stream : "HMLA",
+           from: "am3.HA_out",
+           to : "",
+       }                            
+    ] , 
+
+
+
+   initValues: [
+      {
+           name : "am1.flowrate_max",
+           value: 42000,
+      },
+      {
+           name : "am1.frequency_max",  
+           value: 60,
+      },  
+
+      
+      {
+           name : "am2.m",  
+           value: 0.7,
+      },       
+      {
+           name : "am2.C2",
+           value: 0.5,
+      },        
+      {
+           name : "am2.C1",  
+           value: 0.5,
+      },       
+      {
+           name : "am2.beta",
+           value: 1000,
+      },
+      {
+           name : "am2.effs",  
+           value: 0.99,
+      },       
+      {
+           name : "am2.Ao",
+           value: 986.8819,
+      },
+
+      {
+           name : "am2.Face_area",  
+           value: 4.6674,
+      },  
+      
+      {
+           name : "am2.Do",
+           value: 13.11,
+      },        
+      {
+           name : "am2.Di",  
+           value: 12.7,
+      },  
+      
+      {
+           name : "am2.Sl",
+           value: 48.88,
+      },
+      {
+           name : "am2.St",  
+           value: 37.5,
+      },  
+      {
+           name : "am2.Ai",  
+           value: 46,
+      },       
+      {
+           name : "am2.de_C_CAP",
+           value: 280,
+      },      
+      {
+           name : "am2.de_F_Area",
+           value: 0.005669,
+      },
+      {
+           name : "am2.Nr",  
+           value: 8,
+      },  
+
+
+      {
+           name : "am2.WaterFlow_min",  
+           value: 0.0001,
+      },  
+      
+      {
+           name : "am2.WaterFlow_max",
+           value: 17,
+      },        
+      {
+           name : "am2.Coeff7",  
+           value: 0,
+      },  
+      
+      {
+           name : "am2.Coeff6",
+           value: 0,
+      },
+      {
+           name : "am2.Coeff5",  
+           value: 0,
+      },  
+      {
+           name : "am2.Coeff4",  
+           value: 0,
+      },       
+      {
+           name : "am2.Coeff3",
+           value: 0,
+      }, 
+      {
+           name : "am2.Coeff2",  
+           value: 0,
+      },        
+      {
+           name : "am2.Coeff1",
+           value: 0.1669,
+      },
+      {
+           name : "am2.Coeff0",  
+           value: 0.0001,
+      }, 
+
+
+      {
+           name : "am3.frequency_max",  
+           value: 60,
+      },       
+      {
+           name : "am3.flowrate_max",
+           value: 42000,
+      }, 
+      {
+           name : "am3.pressure_max",  
+           value: 1912.30,
+      },        
+      {
+           name : "am3.fan_efficiency",
+           value: 0.7,
+      },
+      {
+           name : "am3.ca",  
+           value: 1,
+      }              
+               
+   ]
+
+
+
+}
