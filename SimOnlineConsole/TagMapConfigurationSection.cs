@@ -35,6 +35,13 @@ namespace com.acs.custom.config
         {
             get { return (OutputStreamMapCollection) base["OutputStreamMaps"]; }
         }
+
+        // section 6
+        [ConfigurationProperty("CheckAliveTags", IsDefaultCollection = true)]
+        public CheckAliveTagCollection CheckAliveTags
+        {
+            get { return (CheckAliveTagCollection)base["CheckAliveTags"]; }
+        }
     }
     #endregion
     
@@ -133,6 +140,23 @@ namespace com.acs.custom.config
         {
             get { return (string)this["property"]; }
             set { this["property"] = value; }
+        }
+        [ConfigurationProperty("tagname", IsKey = false, IsRequired = true)]
+        public string tagname
+        {
+            get { return (string)this["tagname"]; }
+            set { this["tagname"] = value; }
+        }
+    }
+
+    // section 6
+    public class CheckAliveTagElement : ConfigurationElement
+    {
+        [ConfigurationProperty("name", IsKey = true, IsRequired = true)]
+        public string name
+        {
+            get { return (string)this["name"]; }
+            set { this["name"] = value; }
         }
         [ConfigurationProperty("tagname", IsKey = false, IsRequired = true)]
         public string tagname
@@ -428,7 +452,64 @@ namespace com.acs.custom.config
              }
              return result;
          }
-    }   
-     
+    }
+
+    // section 6
+    public class CheckAliveTagCollection : ConfigurationElementCollection
+    {
+
+        protected override ConfigurationElement CreateNewElement()
+        {
+            return new CheckAliveTagElement();
+        }
+
+        protected override object GetElementKey(ConfigurationElement element)
+        {
+            return ((CheckAliveTagElement)element).name;
+        }
+
+        public override ConfigurationElementCollectionType CollectionType
+        {
+            get { return ConfigurationElementCollectionType.BasicMap; }
+        }
+
+        protected override string ElementName
+        {
+            get { return "AliveTag"; }
+        }
+
+        public CheckAliveTagElement this[int index]
+        {
+            get { return (CheckAliveTagElement)BaseGet(index); }
+            set
+            {
+                if (BaseGet(index) != null)
+                {
+                    BaseRemoveAt(index);
+                }
+                BaseAdd(index, value);
+            }
+        }
+
+        new public CheckAliveTagElement this[string id]
+        {
+            get { return (CheckAliveTagElement)BaseGet(id); }
+        }
+
+        public bool ContainsKey(string key)
+        {
+            bool result = false;
+            object[] keys = BaseGetAllKeys();
+            foreach (object obj in keys)
+            {
+                if ((string)obj == key)
+                {
+                    result = true;
+                    break;
+                }
+            }
+            return result;
+        }
+    }
     #endregion
 }

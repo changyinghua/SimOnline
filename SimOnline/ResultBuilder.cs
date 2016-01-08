@@ -5,11 +5,13 @@ using System.Text;
 using System.Data;
 
 using OPCClient;
+using log4net;
 
 namespace com.acs.sim.online
 {
     public class ResultBuilder : IResultBuilder
     {
+        public readonly ILog logger = LogManager.GetLogger(typeof(ResultBuilder));
         private IDictionary<string, double> outputValues;
         private Client4OPC client4OPC;
 
@@ -50,6 +52,7 @@ namespace com.acs.sim.online
             }
             catch (Exception ex)
             {
+                logger.Error(ex.Message);
                 Console.Out.WriteLine("ResultBuilder.WriteTagValues exception: {0}", ex.Message);
                 return false;
             }

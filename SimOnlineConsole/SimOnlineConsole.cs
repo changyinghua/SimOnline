@@ -6,20 +6,37 @@ using System.Configuration;
 
 using com.acs.custom.config;
 using com.acs.sim.online;
+using System.Runtime.InteropServices;
+using System.Threading;
 
 namespace com.acs.sim.online.console
 {
     class SimOnlineConsole
     {
+        private const int MF_BYCOMMAND = 0x00000000;
+        public const int SC_CLOSE = 0xF060;
+
+        [DllImport("user32.dll")]
+        public static extern int DeleteMenu(IntPtr hMenu, int nPosition, int wFlags);
+
+        [DllImport("user32.dll")]
+        private static extern IntPtr GetSystemMenu(IntPtr hWnd, bool bRevert);
+
+        [DllImport("kernel32.dll", ExactSpelling = true)]
+        private static extern IntPtr GetConsoleWindow();
+
         static string caseFilePath;
         static IList<string> inputTagNames = new List<string>();
         static IList<InputBlockMap> inputBlockMaps = new List<InputBlockMap> ();
         static IList<InputStreamMap> inputStreamMaps = new List<InputStreamMap>();
         static IList<OutputBlockMap> outputBlockMaps = new List<OutputBlockMap>();
         static IList<OutputStreamMap> outputStreamMaps = new List<OutputStreamMap>();
+        static IList<string> checkAliveTagNames = new List<string>();
 
         static void Main(string[] args)
         {
+            DeleteMenu(GetSystemMenu(GetConsoleWindow(), false), SC_CLOSE, MF_BYCOMMAND);
+
             DateTime startTime = DateTime.Now;
             Console.WriteLine("Start time: {0}", startTime);
 
@@ -33,9 +50,10 @@ namespace com.acs.sim.online.console
                 {
                     return;
                 }
+                sol.ConfigAliveTag(checkAliveTagNames);
                 if (sol.Open())
                 {
-                    sol.Run();
+                    sol.Run();         
                 }
                 else
                 {
@@ -48,8 +66,12 @@ namespace com.acs.sim.online.console
                 Console.WriteLine("End time: {0}", stopTime);
                 TimeSpan duration = stopTime - startTime;
                 Console.WriteLine("Elapse: {0}", duration);
-
+               // new Thread(new ThreadStart(() => sol.ReportShutdown())).Start();
+                sol.ReportShutdown();
                 Console.WriteLine("Press any key again to exit.");
+
+                //sol.ReportShutdown();
+               // sol.Close();            
                 Console.ReadKey();
             }
             catch (Exception e)
@@ -118,6 +140,11 @@ namespace com.acs.sim.online.console
                     osm.Property = osme.property;
                     osm.TagName = osme.tagname;
                     outputStreamMaps.Add(osm);
+                }
+                CheckAliveTagCollection cams = tagMapConfigSection.CheckAliveTags;
+                foreach (CheckAliveTagElement cae in cams)
+                {
+                    checkAliveTagNames.Add(cae.tagname);
                 }
 
             }

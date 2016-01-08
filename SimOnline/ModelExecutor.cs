@@ -25,8 +25,8 @@ namespace com.acs.sim.online
         TimeSpan elapseTime = new TimeSpan();
 
         // logging facility
-        private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
+       // private static readonly ILog logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        public readonly ILog logger = LogManager.GetLogger(typeof(ModelExecutor));
         #endregion
 
         #region properties
@@ -81,6 +81,7 @@ namespace com.acs.sim.online
         {
             if (!this.flowsheet.Load(casePath))
             {
+                logger.Debug("flowsheet load error");
                 return false;
             }
             return true;

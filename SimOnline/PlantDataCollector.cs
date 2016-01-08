@@ -5,11 +5,13 @@ using System.Text;
 using System.Data;
 
 using OPCClient;
+using log4net;
 
 namespace com.acs.sim.online
 {
     public class PlantDataCollector: IRealtimeDataCollector
     {
+        public readonly ILog logger = LogManager.GetLogger(typeof(PlantDataCollector));
         private string serverName;
         private string userName;
         private string userPassword;
@@ -64,6 +66,7 @@ namespace com.acs.sim.online
             catch (Exception ex)
             {
                 // tag name is null or tag name exists
+                logger.Error(ex.Message);
                 return false;
             }
             return true;
@@ -79,6 +82,7 @@ namespace com.acs.sim.online
 
             if (connectSuccess)
             {
+                logger.Debug("Connect to OPC Server Success");
                 // register tags to OPC 
                 foreach (KeyValuePair<string, double> kvp in this.rawData.ToArray())
                 {
@@ -88,7 +92,7 @@ namespace com.acs.sim.online
 
 
                 //OPC.DataChange += new DataChangeHandler(OPC_DataChange);
-                client4OPC.OpcServer.ShutdownRequested += new OPCDA.NET.ShutdownRequestEventHandler(OpcServer_ShutdownRequested);
+               // client4OPC.OpcServer.ShutdownRequested += new OPCDA.NET.ShutdownRequestEventHandler(OpcServer_ShutdownRequested);
             }
             return connectSuccess;
         }
@@ -112,6 +116,7 @@ namespace com.acs.sim.online
             }
             catch (Exception e)
             {
+                logger.Error(e.Message);
                 Console.Out.WriteLine("PlantDataCollector.ReadTagValues exception: {0}", e.Message);
                 return false;
             }
